@@ -1,4 +1,4 @@
-import { iota } from '@/core/generator/iota'
+import { iota } from '@core/generator/iota'
 
 // we need this to generate unique id per geometry
 // so geometry manager can bind geometry once per render

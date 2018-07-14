@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
+    "target": "es6",
     "baseUrl": ".",
     "paths": {
       "@*": ["./src/*"]
     }
   },
   "parcelTsPluginOptions": {
-    // If true type-checking is disabled
     "transpileOnly": false
   }
 }

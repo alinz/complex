@@ -1,4 +1,4 @@
-import { Geometry } from '@/core/geometry/geometry'
+import { Geometry } from '@core/geometry/geometry'
 
 export class GeometryManager {
   geometries: Map<{ new (): Geometry }, Geometry>
