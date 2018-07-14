@@ -1,4 +1,4 @@
-export class Window {
+export class WindowManager {
   gl: WebGL2RenderingContext
   canvas: HTMLCanvasElement
 
@@ -29,27 +29,26 @@ export class Window {
     this.gl = gl
 
     this.resize()
+
     window.addEventListener('resize', this.resize, false)
   }
 
   resize = () => {
+    const { canvas, gl } = this
     const cssToRealPixels = window.devicePixelRatio || 1
 
     // Lookup the size the browser is displaying the canvas.
-    const displayWidth = Math.floor(this.canvas.clientWidth * cssToRealPixels)
-    const displayHeight = Math.floor(this.canvas.clientHeight * cssToRealPixels)
+    const displayWidth = Math.floor(canvas.clientWidth * cssToRealPixels)
+    const displayHeight = Math.floor(canvas.clientHeight * cssToRealPixels)
 
     // Check if the canvas is not the same size.
-    if (
-      this.canvas.width !== displayWidth ||
-      this.canvas.height !== displayHeight
-    ) {
+    if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
       // Make the canvas the same size
-      this.canvas.width = displayWidth
-      this.canvas.height = displayHeight
+      canvas.width = displayWidth
+      canvas.height = displayHeight
     }
 
     // Tell WebGL how to convert from clip space to pixels
-    this.gl.viewport(0, 0, displayWidth, displayHeight)
+    gl.viewport(0, 0, displayWidth, displayHeight)
   }
 }

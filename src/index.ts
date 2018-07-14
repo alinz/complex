@@ -1,5 +1,5 @@
-import { Window } from './core/window'
+import { WindowManager } from '@core/window'
 
 window.onload = () => {
-  new Window()
+  new WindowManager()
 }
