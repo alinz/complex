@@ -1,5 +1,5 @@
-import { Mat4, Vec3 } from '@/core/math/type'
-import { toRadian } from '@/core/math/util'
+import { Mat4, Vec3 } from '@core/math/type'
+import { toRadian } from '@core/math/util'
 
 export const M00 = 0
 export const M01 = 1

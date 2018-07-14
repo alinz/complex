@@ -1,5 +1,5 @@
-import { toRadian } from '@/core/math/util'
-import { Vec2 } from '@/core/math/type'
+import { toRadian } from '@core/math/util'
+import { Vec2 } from '@core/math/type'
 
 export const add = (des: Vec2, a: Vec2, b: Vec2): Vec2 => {
   des.values[0] = a.values[0] + b.values[0]
