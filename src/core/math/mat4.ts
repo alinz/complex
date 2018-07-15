@@ -22,65 +22,80 @@ export const createEmpty = (): Mat4 => {
   return new Mat4(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 }
 
-export const clear = (src: Mat4): Mat4 => {
-  src[M00] = 0
-  src[M01] = 0
-  src[M02] = 0
-  src[M03] = 0
-  src[M10] = 0
-  src[M11] = 0
-  src[M12] = 0
-  src[M13] = 0
-  src[M20] = 0
-  src[M21] = 0
-  src[M22] = 0
-  src[M23] = 0
-  src[M30] = 0
-  src[M31] = 0
-  src[M32] = 0
-  src[M33] = 0
+export const clear = (des: Mat4): Mat4 => {
+  const desM = des.values
 
-  return src
+  desM[M00] = 0
+  desM[M01] = 0
+  desM[M02] = 0
+  desM[M03] = 0
+
+  desM[M10] = 0
+  desM[M11] = 0
+  desM[M12] = 0
+  desM[M13] = 0
+
+  desM[M20] = 0
+  desM[M21] = 0
+  desM[M22] = 0
+  desM[M23] = 0
+
+  desM[M30] = 0
+  desM[M31] = 0
+  desM[M32] = 0
+  desM[M33] = 0
+
+  return des
 }
 
 export const identity = (des: Mat4): Mat4 => {
-  des[M00] = 1
-  des[M01] = 0
-  des[M02] = 0
-  des[M03] = 0
-  des[M10] = 0
-  des[M11] = 1
-  des[M12] = 0
-  des[M13] = 0
-  des[M20] = 0
-  des[M21] = 0
-  des[M22] = 1
-  des[M23] = 0
-  des[M30] = 0
-  des[M31] = 0
-  des[M32] = 0
-  des[M33] = 1
+  const desM = des.values
+
+  desM[M00] = 1
+  desM[M01] = 0
+  desM[M02] = 0
+  desM[M03] = 0
+
+  desM[M10] = 0
+  desM[M11] = 1
+  desM[M12] = 0
+  desM[M13] = 0
+
+  desM[M20] = 0
+  desM[M21] = 0
+  desM[M22] = 1
+  desM[M23] = 0
+
+  desM[M30] = 0
+  desM[M31] = 0
+  desM[M32] = 0
+  desM[M33] = 1
 
   return des
 }
 
 export const initTranslation = (des: Mat4, x: number, y: number, z: number): Mat4 => {
-  des[M00] = 1
-  des[M01] = 0
-  des[M02] = 0
-  des[M03] = x
-  des[M10] = 0
-  des[M11] = 1
-  des[M12] = 0
-  des[M13] = y
-  des[M20] = 0
-  des[M21] = 0
-  des[M22] = 1
-  des[M23] = z
-  des[M30] = 0
-  des[M31] = 0
-  des[M32] = 0
-  des[M33] = 1
+  const desM = des.values
+
+  desM[M00] = 1
+  desM[M01] = 0
+  desM[M02] = 0
+  desM[M03] = x
+
+  desM[M10] = 0
+  desM[M11] = 1
+  desM[M12] = 0
+  desM[M13] = y
+
+  desM[M20] = 0
+  desM[M21] = 0
+  desM[M22] = 1
+  desM[M23] = z
+
+  desM[M30] = 0
+  desM[M31] = 0
+  desM[M32] = 0
+  desM[M33] = 1
 
   return des
 }
@@ -92,14 +107,17 @@ export const initScale = (des: Mat4, x: number, y: number, z: number) => {
   m[M01] = 0
   m[M02] = 0
   m[M03] = 0
+
   m[M10] = 0
   m[M11] = y
   m[M12] = 0
   m[M13] = 0
+
   m[M20] = 0
   m[M21] = 0
   m[M22] = z
   m[M23] = 0
+
   m[M30] = 0
   m[M31] = 0
   m[M32] = 0
@@ -108,85 +126,185 @@ export const initScale = (des: Mat4, x: number, y: number, z: number) => {
   return des
 }
 
-export const mul = (des: Mat4, a: Mat4, b: Mat4): Mat4 => {
-  const desV = des.values
-  const aV = a.values
-  const bV = b.values
+export const initRotation = (des: Mat4, x: number, y: number, z: number): Mat4 => {
+  const rx = createEmpty()
+  const ry = createEmpty()
+  const rz = createEmpty()
 
-  let a00 = aV[M00],
-    a01 = aV[M01],
-    a02 = aV[M02],
-    a03 = aV[M03]
-  let a10 = aV[M10],
-    a11 = aV[M11],
-    a12 = aV[M12],
-    a13 = aV[M13]
-  let a20 = aV[M20],
-    a21 = aV[M21],
-    a22 = aV[M22],
-    a23 = aV[M23]
-  let a30 = aV[M30],
-    a31 = aV[M31],
-    a32 = aV[M32],
-    a33 = aV[M33]
+  const xM = rx.values
+  const yM = ry.values
+  const zM = rz.values
+
+  x = toRadian(x)
+  y = toRadian(y)
+  z = toRadian(z)
+
+  const sinX = Math.sin(x)
+  const sinY = Math.sin(y)
+  const sinZ = Math.sin(z)
+
+  const cosX = Math.cos(x)
+  const cosY = Math.cos(y)
+  const cosZ = Math.cos(z)
+
+  zM[M00] = cosZ
+  zM[M10] = sinZ
+  zM[M20] = 0
+  zM[M30] = 0
+
+  zM[M01] = -sinZ
+  zM[M11] = cosZ
+  zM[M21] = 0
+  zM[M31] = 0
+
+  zM[M02] = 0
+  zM[M12] = 0
+  zM[M22] = 1
+  zM[M32] = 0
+
+  zM[M03] = 0
+  zM[M13] = 0
+  zM[M23] = 0
+  zM[M33] = 1
+
+  xM[M00] = 1
+  xM[M10] = 0
+  xM[M20] = 0
+  xM[M30] = 0
+
+  xM[M01] = 0
+  xM[M11] = cosX
+  xM[M21] = sinX
+  xM[M31] = 0
+
+  xM[M02] = 0
+  xM[M12] = -sinX
+  xM[M22] = cosX
+  xM[M32] = 0
+
+  xM[M03] = 0
+  xM[M13] = 0
+  xM[M23] = 0
+  xM[M33] = 1
+
+  yM[M00] = cosY
+  yM[M10] = 0
+  yM[M20] = sinY
+  yM[M30] = 0
+
+  yM[M01] = 0
+  yM[M11] = 1
+  yM[M21] = 0
+  yM[M31] = 0
+
+  yM[M02] = -sinY
+  yM[M12] = 0
+  yM[M22] = cosY
+  yM[M32] = 0
+
+  yM[M03] = 0
+  yM[M13] = 0
+  yM[M23] = 0
+  yM[M33] = 1
+
+  mul(des, ry, rx)
+  mul(des, rz, des)
+
+  return des
+}
+
+export const mul = (des: Mat4, a: Mat4, b: Mat4): Mat4 => {
+  const desM = des.values
+  const aM = a.values
+  const bM = b.values
+
+  let a00 = aM[M00]
+  let a01 = aM[M01]
+  let a02 = aM[M02]
+  let a03 = aM[M03]
+
+  let a10 = aM[M10]
+  let a11 = aM[M11]
+  let a12 = aM[M12]
+  let a13 = aM[M13]
+
+  let a20 = aM[M20]
+  let a21 = aM[M21]
+  let a22 = aM[M22]
+  let a23 = aM[M23]
+
+  let a30 = aM[M30]
+  let a31 = aM[M31]
+  let a32 = aM[M32]
+  let a33 = aM[M33]
 
   // Cache only the current line of the second matrix
-  let b0 = bV[0],
-    b1 = bV[1],
-    b2 = bV[2],
-    b3 = bV[3]
-  desV[0] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30
-  desV[1] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31
-  desV[2] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32
-  desV[3] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33
+  let b0 = bM[0]
+  let b1 = bM[1]
+  let b2 = bM[2]
+  let b3 = bM[3]
 
-  b0 = bV[4]
-  b1 = bV[5]
-  b2 = bV[6]
-  b3 = bV[7]
-  desV[4] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30
-  desV[5] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31
-  desV[6] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32
-  desV[7] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33
+  desM[0] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30
+  desM[1] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31
+  desM[2] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32
+  desM[3] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33
 
-  b0 = bV[8]
-  b1 = bV[9]
-  b2 = bV[10]
-  b3 = bV[11]
-  desV[8] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30
-  desV[9] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31
-  desV[10] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32
-  desV[11] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33
+  b0 = bM[4]
+  b1 = bM[5]
+  b2 = bM[6]
+  b3 = bM[7]
 
-  b0 = bV[12]
-  b1 = bV[13]
-  b2 = bV[14]
-  b3 = bV[15]
-  desV[12] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30
-  desV[13] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31
-  desV[14] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32
-  desV[15] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33
+  desM[4] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30
+  desM[5] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31
+  desM[6] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32
+  desM[7] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33
+
+  b0 = bM[8]
+  b1 = bM[9]
+  b2 = bM[10]
+  b3 = bM[11]
+
+  desM[8] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30
+  desM[9] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31
+  desM[10] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32
+  desM[11] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33
+
+  b0 = bM[12]
+  b1 = bM[13]
+  b2 = bM[14]
+  b3 = bM[15]
+
+  desM[12] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30
+  desM[13] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31
+  desM[14] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32
+  desM[15] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33
 
   return des
 }
 
 export const copy = (des: Mat4, src: Mat4): Mat4 => {
-  des[M00] = src[M00]
-  des[M01] = src[M01]
-  des[M02] = src[M02]
-  des[M03] = src[M03]
-  des[M10] = src[M10]
-  des[M11] = src[M11]
-  des[M12] = src[M12]
-  des[M13] = src[M13]
-  des[M20] = src[M20]
-  des[M21] = src[M21]
-  des[M22] = src[M22]
-  des[M23] = src[M23]
-  des[M30] = src[M30]
-  des[M31] = src[M31]
-  des[M32] = src[M32]
-  des[M33] = src[M33]
+  const desM = des.values
+  const srcM = src.values
+
+  desM[M00] = srcM[M00]
+  desM[M01] = srcM[M01]
+  desM[M02] = srcM[M02]
+  desM[M03] = srcM[M03]
+
+  desM[M10] = srcM[M10]
+  desM[M11] = srcM[M11]
+  desM[M12] = srcM[M12]
+  desM[M13] = srcM[M13]
+
+  desM[M20] = srcM[M20]
+  desM[M21] = srcM[M21]
+  desM[M22] = srcM[M22]
+  desM[M23] = srcM[M23]
+
+  desM[M30] = srcM[M30]
+  desM[M31] = srcM[M31]
+  desM[M32] = srcM[M32]
+  desM[M33] = srcM[M33]
 
   return des
 }
