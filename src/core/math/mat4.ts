@@ -74,145 +74,6 @@ export const identity = (des: Mat4): Mat4 => {
   return des
 }
 
-export const initTranslation = (des: Mat4, x: number, y: number, z: number): Mat4 => {
-  const desM = des.values
-
-  desM[M00] = 1
-  desM[M01] = 0
-  desM[M02] = 0
-  desM[M03] = x
-
-  desM[M10] = 0
-  desM[M11] = 1
-  desM[M12] = 0
-  desM[M13] = y
-
-  desM[M20] = 0
-  desM[M21] = 0
-  desM[M22] = 1
-  desM[M23] = z
-
-  desM[M30] = 0
-  desM[M31] = 0
-  desM[M32] = 0
-  desM[M33] = 1
-
-  return des
-}
-
-export const initScale = (des: Mat4, x: number, y: number, z: number) => {
-  const m = des.values
-
-  m[M00] = x
-  m[M01] = 0
-  m[M02] = 0
-  m[M03] = 0
-
-  m[M10] = 0
-  m[M11] = y
-  m[M12] = 0
-  m[M13] = 0
-
-  m[M20] = 0
-  m[M21] = 0
-  m[M22] = z
-  m[M23] = 0
-
-  m[M30] = 0
-  m[M31] = 0
-  m[M32] = 0
-  m[M33] = 1
-
-  return des
-}
-
-export const initRotation = (des: Mat4, x: number, y: number, z: number): Mat4 => {
-  const rx = createEmpty()
-  const ry = createEmpty()
-  const rz = createEmpty()
-
-  const xM = rx.values
-  const yM = ry.values
-  const zM = rz.values
-
-  x = toRadian(x)
-  y = toRadian(y)
-  z = toRadian(z)
-
-  const sinX = Math.sin(x)
-  const sinY = Math.sin(y)
-  const sinZ = Math.sin(z)
-
-  const cosX = Math.cos(x)
-  const cosY = Math.cos(y)
-  const cosZ = Math.cos(z)
-
-  zM[M00] = cosZ
-  zM[M10] = sinZ
-  zM[M20] = 0
-  zM[M30] = 0
-
-  zM[M01] = -sinZ
-  zM[M11] = cosZ
-  zM[M21] = 0
-  zM[M31] = 0
-
-  zM[M02] = 0
-  zM[M12] = 0
-  zM[M22] = 1
-  zM[M32] = 0
-
-  zM[M03] = 0
-  zM[M13] = 0
-  zM[M23] = 0
-  zM[M33] = 1
-
-  xM[M00] = 1
-  xM[M10] = 0
-  xM[M20] = 0
-  xM[M30] = 0
-
-  xM[M01] = 0
-  xM[M11] = cosX
-  xM[M21] = sinX
-  xM[M31] = 0
-
-  xM[M02] = 0
-  xM[M12] = -sinX
-  xM[M22] = cosX
-  xM[M32] = 0
-
-  xM[M03] = 0
-  xM[M13] = 0
-  xM[M23] = 0
-  xM[M33] = 1
-
-  yM[M00] = cosY
-  yM[M10] = 0
-  yM[M20] = sinY
-  yM[M30] = 0
-
-  yM[M01] = 0
-  yM[M11] = 1
-  yM[M21] = 0
-  yM[M31] = 0
-
-  yM[M02] = -sinY
-  yM[M12] = 0
-  yM[M22] = cosY
-  yM[M32] = 0
-
-  yM[M03] = 0
-  yM[M13] = 0
-  yM[M23] = 0
-  yM[M33] = 1
-
-  mul(des, ry, rx)
-  mul(des, rz, des)
-
-  return des
-}
-
 export const mul = (des: Mat4, a: Mat4, b: Mat4): Mat4 => {
   const desM = des.values
   const aM = a.values
@@ -282,6 +143,156 @@ export const mul = (des: Mat4, a: Mat4, b: Mat4): Mat4 => {
   return des
 }
 
+export const translate = (out: Mat4, a: Mat4, v: Vec3) => {
+  let [x, y, z] = v.values
+  let a00, a01, a02, a03
+  let a10, a11, a12, a13
+  let a20, a21, a22, a23
+
+  const outM = out.values
+  const aM = a.values
+
+  if (aM === outM) {
+    outM[12] = aM[0] * x + aM[4] * y + aM[8] * z + aM[12]
+    outM[13] = aM[1] * x + aM[5] * y + aM[9] * z + aM[13]
+    outM[14] = aM[2] * x + aM[6] * y + aM[10] * z + aM[14]
+    outM[15] = aM[3] * x + aM[7] * y + aM[11] * z + aM[15]
+  } else {
+    a00 = aM[0]
+    a01 = aM[1]
+    a02 = aM[2]
+    a03 = aM[3]
+    a10 = aM[4]
+    a11 = aM[5]
+    a12 = aM[6]
+    a13 = aM[7]
+    a20 = aM[8]
+    a21 = aM[9]
+    a22 = aM[10]
+    a23 = aM[11]
+
+    outM[0] = a00
+    outM[1] = a01
+    outM[2] = a02
+    outM[3] = a03
+    outM[4] = a10
+    outM[5] = a11
+    outM[6] = a12
+    outM[7] = a13
+    outM[8] = a20
+    outM[9] = a21
+    outM[10] = a22
+    outM[11] = a23
+
+    outM[12] = a00 * x + a10 * y + a20 * z + aM[12]
+    outM[13] = a01 * x + a11 * y + a21 * z + aM[13]
+    outM[14] = a02 * x + a12 * y + a22 * z + aM[14]
+    outM[15] = a03 * x + a13 * y + a23 * z + aM[15]
+  }
+
+  return out
+}
+
+export function rotate(des: Mat4, a: Mat4, r: number, axis: Vec3): Mat4 {
+  let [x, y, z] = axis.values
+  let len = Math.sqrt(x * x + y * y + z * z)
+  let s, c, t
+  let a00, a01, a02, a03
+  let a10, a11, a12, a13
+  let a20, a21, a22, a23
+  let b00, b01, b02
+  let b10, b11, b12
+  let b20, b21, b22
+
+  const rad = toRadian(r)
+
+  // if (len < glMatrix.EPSILON) { return null; }
+
+  len = 1 / len
+  x *= len
+  y *= len
+  z *= len
+
+  s = Math.sin(rad)
+  c = Math.cos(rad)
+  t = 1 - c
+
+  const aM = a.values
+  const desM = des.values
+
+  a00 = aM[0]
+  a01 = aM[1]
+  a02 = aM[2]
+  a03 = aM[3]
+  a10 = aM[4]
+  a11 = aM[5]
+  a12 = aM[6]
+  a13 = aM[7]
+  a20 = aM[8]
+  a21 = aM[9]
+  a22 = aM[10]
+  a23 = aM[11]
+
+  // Construct the elements of the rotation matrix
+  b00 = x * x * t + c
+  b01 = y * x * t + z * s
+  b02 = z * x * t - y * s
+  b10 = x * y * t - z * s
+  b11 = y * y * t + c
+  b12 = z * y * t + x * s
+  b20 = x * z * t + y * s
+  b21 = y * z * t - x * s
+  b22 = z * z * t + c
+
+  // Perform rotation-specific matrix multiplication
+  desM[0] = a00 * b00 + a10 * b01 + a20 * b02
+  desM[1] = a01 * b00 + a11 * b01 + a21 * b02
+  desM[2] = a02 * b00 + a12 * b01 + a22 * b02
+  desM[3] = a03 * b00 + a13 * b01 + a23 * b02
+  desM[4] = a00 * b10 + a10 * b11 + a20 * b12
+  desM[5] = a01 * b10 + a11 * b11 + a21 * b12
+  desM[6] = a02 * b10 + a12 * b11 + a22 * b12
+  desM[7] = a03 * b10 + a13 * b11 + a23 * b12
+  desM[8] = a00 * b20 + a10 * b21 + a20 * b22
+  desM[9] = a01 * b20 + a11 * b21 + a21 * b22
+  desM[10] = a02 * b20 + a12 * b21 + a22 * b22
+  desM[11] = a03 * b20 + a13 * b21 + a23 * b22
+
+  if (aM !== desM) {
+    // If the source and destination differ, copy the unchanged last row
+    desM[12] = aM[12]
+    desM[13] = aM[13]
+    desM[14] = aM[14]
+    desM[15] = aM[15]
+  }
+  return des
+}
+
+export const scale = (des: Mat4, a: Mat4, v: Vec3): Mat4 => {
+  const [x, y, z] = v.values
+  const desM = des.values
+  const aM = a.values
+
+  desM[0] = aM[0] * x
+  desM[1] = aM[1] * x
+  desM[2] = aM[2] * x
+  desM[3] = aM[3] * x
+  desM[4] = aM[4] * y
+  desM[5] = aM[5] * y
+  desM[6] = aM[6] * y
+  desM[7] = aM[7] * y
+  desM[8] = aM[8] * z
+  desM[9] = aM[9] * z
+  desM[10] = aM[10] * z
+  desM[11] = aM[11] * z
+  desM[12] = aM[12]
+  desM[13] = aM[13]
+  desM[14] = aM[14]
+  desM[15] = aM[15]
+
+  return des
+}
+
 export const copy = (des: Mat4, src: Mat4): Mat4 => {
   const desM = des.values
   const srcM = src.values
@@ -305,6 +316,18 @@ export const copy = (des: Mat4, src: Mat4): Mat4 => {
   desM[M31] = srcM[M31]
   desM[M32] = srcM[M32]
   desM[M33] = srcM[M33]
+
+  return des
+}
+
+export const transformationMatrix = (des: Mat4, position: Vec3, rx: number, ry: number, rz: number, scaleValue: number): Mat4 => {
+  identity(des)
+
+  translate(des, des, position)
+  rotate(des, des, rx, new Vec3(1, 0, 0))
+  rotate(des, des, ry, new Vec3(0, 1, 0))
+  rotate(des, des, rz, new Vec3(0, 0, 1))
+  scale(des, des, new Vec3(scaleValue, scaleValue, scaleValue))
 
   return des
 }

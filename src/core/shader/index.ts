@@ -25,14 +25,14 @@ export class ShaderManager {
     this.shadersMap.set(ShaderClass, new ShaderClass(this.gl))
   }
 
-  bind(ShaderClass: { new (gl: WebGL2RenderingContext): Shader }) {
+  bind<T extends Shader>(ShaderClass: { new (gl: WebGL2RenderingContext): T }): T {
     const reqShader = this.shadersMap.get(ShaderClass)
     if (!reqShader) {
       throw new Error(`shader ${ShaderClass.name} not found to be binded`)
     }
 
     if (this.currentBindedShader && this.currentBindedShader === reqShader) {
-      return
+      return reqShader as T
     }
 
     if (this.currentBindedShader) {
@@ -41,6 +41,8 @@ export class ShaderManager {
 
     this.currentBindedShader = reqShader
     this.currentBindedShader.start()
+
+    return reqShader as T
   }
 
   unbind() {

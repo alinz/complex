@@ -1,6 +1,7 @@
-export * from '@core/math/type'
+export * from './type'
 
-import * as vec2 from '@core/math/vec2'
-import * as vec3 from '@core/math/vec3'
+import * as vec2 from './vec2'
+import * as vec3 from './vec3'
+import * as mat4 from './mat4'
 
-export { vec2, vec3 }
+export { vec2, vec3, mat4 }

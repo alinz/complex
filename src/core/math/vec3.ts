@@ -1,4 +1,4 @@
-import { Vec2, Vec3, Quat } from '@core/math/type'
+import { Vec2, Vec3 } from '@core/math/type'
 
 export const length = (src: Vec3): number => {
   const [x, y, z] = src.values

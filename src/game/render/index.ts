@@ -1,9 +1,12 @@
 import { System } from '@core/system'
 import { ShaderManager } from '@core/shader'
 import { GeometryManager } from '@core/geometry'
+import { mat4, vec3, Vec3 } from '@core/math'
 
 import { SimpleShader } from '@game/render/shader'
 import { Triangle, Square } from '@game/geometry'
+
+const transformation = mat4.identity(mat4.createEmpty())
 
 export class RenderSystem implements System {
   gl: WebGL2RenderingContext
@@ -50,7 +53,11 @@ export class RenderSystem implements System {
 
   beforeRender() {
     this.clearScreen()
-    this.shaderManager.bind(SimpleShader)
+    const simpleShader = this.shaderManager.bind(SimpleShader)
+
+    mat4.transformationMatrix(transformation, new Vec3(0.2, 0.4, 0.0), 0, 0, 0, 1.0)
+
+    simpleShader.loadTransformationMatrix(transformation)
   }
 
   render() {
@@ -65,5 +72,6 @@ export class RenderSystem implements System {
 
   afterRender() {
     //
+    this.shaderManager.unbind()
   }
 }
