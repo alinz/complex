@@ -2,8 +2,9 @@
   "name": "complex-engine",
   "version": "0.0.0",
   "scripts": {
-    "dev": "parcel ./src/index.html",
-    "build": "rm -rf .cache dist; parcel build ./src/index.html"
+    "clean": "rm -rf .cache dist",
+    "dev": "yarn clean; parcel ./src/index.html",
+    "build": "yarn clean; parcel build ./src/index.html"
   },
   "devDependencies": {
     "@types/webgl2": "^0.0.4",
