@@ -1,13 +1,11 @@
-import { WindowManager } from '@core/window/index'
-import { GameManager } from '@core/game'
-
-import { MyGame } from '@game'
+import { Game } from '@game'
 
 window.onload = () => {
-  const gameManager = new GameManager(30.0)
-  gameManager.start(new MyGame())
+  const game = new Game()
+
+  game.start()
 
   setTimeout(() => {
-    gameManager.stop()
-  }, 10000)
+    game.stop()
+  }, 3000)
 }

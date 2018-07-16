@@ -1,4 +1,4 @@
-export class WindowManager {
+export class Window {
   gl: WebGL2RenderingContext
   canvas: HTMLCanvasElement
 

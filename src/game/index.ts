@@ -1,19 +1,27 @@
-import { Game } from '@core/game'
+import { Window } from '@core/window'
+import { SystemManger } from '@core/system'
 
-export class MyGame implements Game {
-  init() {
-    console.log('init')
+import { RenderSystem } from '@game/render'
+
+export class Game {
+  window: Window
+  systemManager: SystemManger
+
+  constructor() {
+    this.window = new Window()
+    this.systemManager = new SystemManger(60)
+
+    // add all the systems here, order matters
+    this.systemManager.add(RenderSystem, new RenderSystem(this.window.gl))
   }
 
-  fixedUpdate(delta: number) {
-    console.log('updating ' + delta)
+  start() {
+    this.systemManager.startAllSystems()
+    this.systemManager.start()
   }
 
-  lateUpdate(interpolation: number) {
-    console.log('rendering', interpolation)
-  }
-
-  cleanup() {
-    console.log('cleanup')
+  stop() {
+    this.systemManager.stopAllSystems()
+    this.systemManager.stop()
   }
 }
