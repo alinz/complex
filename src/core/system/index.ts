@@ -1,12 +1,12 @@
 import { getTime } from '@core/time'
 
 export interface System {
-  init()
-  start()
-  fixedUpdate(delta: number)
-  lateUpdate(interpolation: number)
-  stop()
-  cleanup()
+  init(): void
+  start(): void
+  fixedUpdate(delta: number): void
+  lateUpdate(interpolation: number): void
+  stop(): void
+  cleanup(): void
 }
 
 class SystemInfo {

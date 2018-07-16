@@ -77,11 +77,12 @@ export const dot = (a: Vec2, b: Vec2): number => {
 }
 
 export const normalized = (des: Vec2, src: Vec2): Vec2 => {
-  const values = src.values
+  const srcM = src.values
+  const desM = des.values
   const len = length(src)
 
-  des[0] = src[0] / len
-  des[1] = src[1] / len
+  desM[0] = srcM[0] / len
+  desM[1] = srcM[1] / len
 
   return this
 }
