@@ -1,18 +1,20 @@
 import { Geometry } from '@core/geometry/geometry'
 
 export class GeometryManager {
-  geometries: Map<{ new (): Geometry }, Geometry>
+  gl: WebGL2RenderingContext
+  geometries: Map<{ new (gl: WebGL2RenderingContext): Geometry }, Geometry>
   currentBindGeometry: Geometry | null
 
-  constructor() {
+  constructor(gl: WebGL2RenderingContext) {
+    this.gl = gl
     this.geometries = new Map()
     this.currentBindGeometry = null
   }
 
-  getInstance(Geometry: { new (): Geometry }): Geometry {
+  getInstance(Geometry: { new (gl: WebGL2RenderingContext): Geometry }): Geometry {
     let geometry = this.geometries.get(Geometry)
     if (!geometry) {
-      geometry = new Geometry()
+      geometry = new Geometry(this.gl)
       this.geometries.set(Geometry, geometry)
     }
     return geometry
