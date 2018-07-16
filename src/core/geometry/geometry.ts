@@ -15,19 +15,15 @@ export class Geometry {
   vao: WebGLVertexArrayObject
   vertex: WebGLBuffer
   index: WebGLBuffer
-  textCoord: WebGLBuffer
+
   vertexCount: number
 
-  constructor(gl: WebGL2RenderingContext, vertices: Array<number>, indices: Array<number>, textCoord?: Array<number>) {
+  constructor(gl: WebGL2RenderingContext, vertices: Array<number>, indices: Array<number>) {
     this.gl = gl
 
     this.id = genGeometryId()
     this.vao = createVertexArray(gl)
     this.vertex = storeFloatDataInAttributeList(gl, vertices, 3, VBO_Location.Vertex)
-    if (textCoord) {
-      this.textCoord = storeFloatDataInAttributeList(gl, textCoord, 2, VBO_Location.Texture)
-    }
-
     this.index = storeIndicies(gl, indices)
     this.vertexCount = indices.length
     gl.bindVertexArray(null)
