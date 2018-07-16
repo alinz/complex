@@ -1,58 +1,13 @@
-import { iota } from '@core/generator/iota'
+import { iota } from '@core/generator'
+import { Texture2D } from '@core/texture'
+
+import { createVertexArray, storeFloatDataInAttributeList, storeIndicies, VBO_Location } from '@core/webgl-util'
 
 // we need this to generate unique id per geometry
 // so geometry manager can bind geometry once per render
 const genGeometryId = iota()
 
-const createVertexArray = (gl: WebGL2RenderingContext): WebGLVertexArrayObject => {
-  const vao = gl.createVertexArray()
-  if (!vao) {
-    throw new Error('can not create vertex array')
-  }
-
-  gl.bindVertexArray(vao)
-
-  return vao
-}
-
-const storeFloatDataInAttributeList = (
-  gl: WebGL2RenderingContext,
-  data: Array<number>,
-  size: number,
-  index: number
-): WebGLBuffer => {
-  const buffer = gl.createBuffer()
-  if (!buffer) {
-    throw new Error('can not create buffer')
-  }
-
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW)
-  gl.vertexAttribPointer(index, size, gl.FLOAT, false, 0, 0)
-  gl.bindBuffer(gl.ARRAY_BUFFER, null)
-
-  return buffer
-}
-
-const storeIndicies = (gl: WebGL2RenderingContext, data: Array<number>): WebGLBuffer => {
-  const buffer = gl.createBuffer()
-  if (!buffer) {
-    throw new Error('can not create buffer')
-  }
-
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer)
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(data), gl.STATIC_DRAW)
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null)
-
-  return buffer
-}
-
-export const DataLocation = {
-  Vertex: 0,
-  Texture: 1
-}
-
-const defaultAttributes = [DataLocation.Vertex]
+const defaultAttributes = [VBO_Location.Vertex]
 
 export class Geometry {
   gl: WebGL2RenderingContext
@@ -68,9 +23,9 @@ export class Geometry {
 
     this.id = genGeometryId()
     this.vao = createVertexArray(gl)
-    this.vertex = storeFloatDataInAttributeList(gl, vertices, 3, DataLocation.Vertex)
+    this.vertex = storeFloatDataInAttributeList(gl, vertices, 3, VBO_Location.Vertex)
     if (textCoord) {
-      this.textCoord = storeFloatDataInAttributeList(gl, textCoord, 2, DataLocation.Texture)
+      this.textCoord = storeFloatDataInAttributeList(gl, textCoord, 2, VBO_Location.Texture)
     }
 
     this.index = storeIndicies(gl, indices)

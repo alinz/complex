@@ -1,4 +1,4 @@
-import { Shader } from './shader'
+import { Shader } from '@core/shader/shader'
 
 export { Shader }
 

@@ -1,4 +1,4 @@
-import { DataLocation } from '@core/geometry'
+import { VBO_Location } from '@core/webgl-util'
 import { Shader, glsl3 } from '@core/shader'
 import { Mat4 } from '@core/math'
 
@@ -38,7 +38,7 @@ export class StaticShader extends Shader {
   }
 
   bindAllAttributes() {
-    this.bindAttribute('coordinates', DataLocation.Vertex)
+    this.bindAttribute('coordinates', VBO_Location.Vertex)
   }
 
   loadProjectionMatrix(matrix: Mat4) {
