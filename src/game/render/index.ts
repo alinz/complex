@@ -3,7 +3,7 @@ import { ShaderManager } from '@core/shader'
 import { GeometryManager } from '@core/geometry'
 
 import { SimpleShader } from '@game/render/shader'
-import { Triangle } from '@game/geometry'
+import { Triangle, Square } from '@game/geometry'
 
 export class RenderSystem implements System {
   gl: WebGL2RenderingContext
@@ -57,10 +57,10 @@ export class RenderSystem implements System {
     //
     const { gl } = this
 
-    const triangle = this.geometryManager.getInstance(Triangle)
+    const geometry = this.geometryManager.getInstance(Square)
 
-    triangle.bind()
-    gl.drawElements(gl.TRIANGLE_STRIP, triangle.vertexCount, gl.UNSIGNED_SHORT, 0)
+    geometry.bind()
+    gl.drawElements(gl.TRIANGLE_STRIP, geometry.vertexCount, gl.UNSIGNED_SHORT, 0)
   }
 
   afterRender() {
