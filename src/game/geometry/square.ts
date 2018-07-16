@@ -17,8 +17,10 @@ const vertices = [
 
 const indices = [0, 1, 2, 2, 3, 0]
 
+const textureCoords = [0, 0, 0, 1, 1, 1, 1, 0]
+
 export class Square extends Geometry {
   constructor(gl: WebGL2RenderingContext) {
-    super(gl, vertices, indices)
+    super(gl, vertices, indices, textureCoords)
   }
 }

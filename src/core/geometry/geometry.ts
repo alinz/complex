@@ -48,7 +48,8 @@ const storeIndicies = (gl: WebGL2RenderingContext, data: Array<number>): WebGLBu
 }
 
 export const DataLocation = {
-  Vertex: 0
+  Vertex: 0,
+  Texture: 1
 }
 
 const defaultAttributes = [DataLocation.Vertex]
@@ -59,14 +60,19 @@ export class Geometry {
   vao: WebGLVertexArrayObject
   vertex: WebGLBuffer
   index: WebGLBuffer
+  textCoord: WebGLBuffer
   vertexCount: number
 
-  constructor(gl: WebGL2RenderingContext, vertices: Array<number>, indices: Array<number>) {
+  constructor(gl: WebGL2RenderingContext, vertices: Array<number>, indices: Array<number>, textCoord?: Array<number>) {
     this.gl = gl
 
     this.id = genGeometryId()
     this.vao = createVertexArray(gl)
     this.vertex = storeFloatDataInAttributeList(gl, vertices, 3, DataLocation.Vertex)
+    if (textCoord) {
+      this.textCoord = storeFloatDataInAttributeList(gl, textCoord, 2, DataLocation.Texture)
+    }
+
     this.index = storeIndicies(gl, indices)
     this.vertexCount = indices.length
     gl.bindVertexArray(null)
