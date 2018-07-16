@@ -21,7 +21,7 @@ class SystemInfo {
 
 export class SystemManger {
   systems: Array<SystemInfo>
-  systemsMap: Map<{ new (): System }, SystemInfo>
+  systemsMap: Map<{ new (...args: any[]): System }, SystemInfo>
   isRunning: boolean
   frameTime: number
   frameRate: number
