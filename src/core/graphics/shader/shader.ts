@@ -1,11 +1,13 @@
+import global from '@core/global'
+
 export class Shader {
-  gl: WebGL2RenderingContext
   vertex: WebGLShader
   fragment: WebGLShader
   program: WebGLProgram | null
 
-  constructor(gl: WebGL2RenderingContext, vertex: string, fragment: string) {
-    this.gl = gl
+  constructor(vertex: string, fragment: string) {
+    const { gl } = global
+
     this.vertex = this.compileShader(vertex, gl.VERTEX_SHADER)
     this.fragment = this.compileShader(fragment, gl.FRAGMENT_SHADER)
 
@@ -24,15 +26,15 @@ export class Shader {
   }
 
   start() {
-    this.gl.useProgram(this.program)
+    global.gl.useProgram(this.program)
   }
 
   stop() {
-    this.gl.useProgram(null)
+    global.gl.useProgram(null)
   }
 
   cleanUp() {
-    const { gl } = this
+    const { gl } = global
 
     // stop the shader
     this.stop()
@@ -46,7 +48,7 @@ export class Shader {
   }
 
   compileShader(src: string, type: number): WebGLShader {
-    const { gl } = this
+    const { gl } = global
 
     const shader = gl.createShader(type)
 
@@ -64,11 +66,11 @@ export class Shader {
   }
 
   bindAttribute(name: string, index: number): void {
-    this.gl.bindAttribLocation(this.program, index, name)
+    global.gl.bindAttribLocation(this.program, index, name)
   }
 
   getUniformLocation(name: string): WebGLUniformLocation {
-    const loc = this.gl.getUniformLocation(this.program, name)
+    const loc = global.gl.getUniformLocation(this.program, name)
     if (loc === null) {
       throw new Error(`location for ${name} is null`)
     }
@@ -77,15 +79,15 @@ export class Shader {
   }
 
   loadFloat(location: WebGLUniformLocation, value: number) {
-    this.gl.uniform1f(location, value)
+    global.gl.uniform1f(location, value)
   }
 
   loadVector(location: WebGLUniformLocation, vector: Float32Array) {
-    this.gl.uniform3fv(location, vector)
+    global.gl.uniform3fv(location, vector)
   }
 
   loadMatrix(location: WebGLUniformLocation, matrix: Float32Array) {
-    this.gl.uniformMatrix4fv(location, false, matrix)
+    global.gl.uniformMatrix4fv(location, false, matrix)
   }
 
   // it should try to bind all attributes for this shaders.

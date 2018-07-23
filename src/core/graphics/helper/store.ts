@@ -1,20 +1,7 @@
-export const createVertexArray = (gl: WebGL2RenderingContext): WebGLVertexArrayObject => {
-  const vao = gl.createVertexArray()
-  if (!vao) {
-    throw new Error('can not create vertex array')
-  }
+import global from '@core/global'
 
-  gl.bindVertexArray(vao)
-
-  return vao
-}
-
-export const storeFloatDataInAttributeList = (
-  gl: WebGL2RenderingContext,
-  data: Array<number>,
-  size: number,
-  index: number
-): WebGLBuffer => {
+export const storeFloatDataInAttributeList = (data: Array<number>, size: number, index: number): WebGLBuffer => {
+  const { gl } = global
   const buffer = gl.createBuffer()
   if (!buffer) {
     throw new Error('can not create buffer')
@@ -28,7 +15,8 @@ export const storeFloatDataInAttributeList = (
   return buffer
 }
 
-export const storeIndicies = (gl: WebGL2RenderingContext, data: Array<number>): WebGLBuffer => {
+export const storeIndicies = (data: Array<number>): WebGLBuffer => {
+  const { gl } = global
   const buffer = gl.createBuffer()
   if (!buffer) {
     throw new Error('can not create buffer')

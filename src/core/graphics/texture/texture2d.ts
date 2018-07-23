@@ -1,9 +1,10 @@
+import global from '@core/global'
+
 export class Texture2D {
   id: WebGLTexture
-  gl: WebGL2RenderingContext
 
-  constructor(gl: WebGL2RenderingContext, image: HTMLImageElement) {
-    this.gl = gl
+  constructor(image: HTMLImageElement) {
+    const { gl } = global
 
     this.id = gl.createTexture()
 
@@ -24,8 +25,18 @@ export class Texture2D {
     )
   }
 
-  cleanUp() {
-    this.gl.deleteTexture(this.id)
+  bind() {
+    const { gl } = global
+    gl.bindTexture(gl.TEXTURE_2D, this.id)
+  }
+
+  unbind() {
+    const { gl } = global
+    gl.bindTexture(gl.TEXTURE_2D, null)
+  }
+
+  clean() {
+    global.gl.deleteTexture(this.id)
     this.id = null
   }
 }

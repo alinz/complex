@@ -1,31 +1,25 @@
-import { Shader } from '@core/shader/shader'
+import global from '@core/global'
 
-export { Shader }
-
-export const glsl3 = (strings: any) => {
-  return '#version 300 es' + strings.raw[0]
-}
+import { Shader } from './shader'
 
 export class ShaderManager {
-  gl: WebGL2RenderingContext
   shadersMap: Map<{ new (gl: WebGL2RenderingContext): Shader }, Shader>
   currentBindedShader: Shader | null
 
-  constructor(gl: WebGL2RenderingContext) {
-    this.gl = gl
+  constructor() {
     this.shadersMap = new Map()
     this.currentBindedShader = null
   }
 
-  add<T extends Shader>(ShaderClass: { new (gl: WebGL2RenderingContext): T }) {
+  add<T extends Shader>(ShaderClass: { new (): T }) {
     if (this.shadersMap.has(ShaderClass)) {
       throw new Error(`shader ${ShaderClass.name} already added`)
     }
 
-    this.shadersMap.set(ShaderClass, new ShaderClass(this.gl))
+    this.shadersMap.set(ShaderClass, new ShaderClass())
   }
 
-  bind<T extends Shader>(ShaderClass: { new (gl: WebGL2RenderingContext): T }): T {
+  bind<T extends Shader>(ShaderClass: { new (): T }): T {
     const reqShader = this.shadersMap.get(ShaderClass)
     if (!reqShader) {
       throw new Error(`shader ${ShaderClass.name} not found to be binded`)

@@ -1,22 +1,21 @@
-import { System } from '@core/system'
-import { ShaderManager } from '@core/shader'
-import { GeometryManager } from '@core/geometry'
+import global from '@core/global'
+import { System } from '@core/ecs'
+import { ShaderManager } from '@core/graphics/shader'
+import { ModelManager } from '@core/graphics/model'
 import { mat4, vec3, Vec3 } from '@core/math'
 
-import { SimpleShader } from '@game/render/shader'
-import { Triangle, Square } from '@game/geometry'
+import { SimpleShader } from '@game/shader'
+import { squareBuilder } from '@game/model'
 
 const transformation = mat4.identity(mat4.createEmpty())
 
 export class RenderSystem implements System {
-  gl: WebGL2RenderingContext
   shaderManager: ShaderManager
-  geometryManager: GeometryManager
+  modelManager: ModelManager
 
-  constructor(gl: WebGL2RenderingContext) {
-    this.gl = gl
-    this.shaderManager = new ShaderManager(gl)
-    this.geometryManager = new GeometryManager(gl)
+  constructor() {
+    this.shaderManager = new ShaderManager()
+    this.modelManager = new ModelManager()
   }
 
   init() {
@@ -39,7 +38,7 @@ export class RenderSystem implements System {
   cleanup() {}
 
   clearScreen() {
-    const { gl } = this
+    const { gl } = global
 
     // Clear the canvas
     gl.clearColor(0.5, 0.5, 0.5, 1.0)
@@ -62,12 +61,12 @@ export class RenderSystem implements System {
 
   render() {
     //
-    const { gl } = this
+    const { gl } = global
 
-    const geometry = this.geometryManager.getInstance(Square)
+    const model = this.modelManager.getInstance(squareBuilder)
 
-    geometry.bind()
-    gl.drawElements(gl.TRIANGLE_STRIP, geometry.vertexCount, gl.UNSIGNED_SHORT, 0)
+    model.bind()
+    gl.drawElements(gl.TRIANGLE_STRIP, model.vertexCount, gl.UNSIGNED_SHORT, 0)
   }
 
   afterRender() {

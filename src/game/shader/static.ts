@@ -1,5 +1,5 @@
-import { VBO_Location } from '@core/webgl-util'
-import { Shader, glsl3 } from '@core/shader'
+import { VBO_Location } from '@core/graphics/helper'
+import { Shader, glsl3 } from '@core/graphics/shader'
 import { Mat4 } from '@core/math'
 
 const vertexSrc = glsl3`
@@ -29,8 +29,8 @@ export class StaticShader extends Shader {
   projectionMatrix: WebGLUniformLocation
   viewMatrix: WebGLUniformLocation
 
-  constructor(gl: WebGL2RenderingContext) {
-    super(gl, vertexSrc, fragmentSrc)
+  constructor() {
+    super(vertexSrc, fragmentSrc)
 
     this.transformationMatrix = this.getUniformLocation('transformationMatrix')
     this.projectionMatrix = this.getUniformLocation('projectionMatrix')
