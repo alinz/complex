@@ -11,11 +11,10 @@ export class Model2D extends Model {
   vertices: WebGLBuffer
 
   constructor(vertices: Array<number>, indices: Array<number>) {
-    super()
+    super(indices.length)
 
     this.vertices = storeFloatDataInAttributeList(vertices, 3, VBO_Location.Vertex)
     this.indices = storeIndicies(indices)
-    this.vertexCount = vertices.length
   }
 
   attributes(): Array<number> {

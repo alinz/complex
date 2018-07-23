@@ -22,7 +22,7 @@ export class ModelManager {
     return model
   }
 
-  autoBind(modelBuilder: () => Model) {
+  autoBind(modelBuilder: () => Model): Model {
     const model = this.getInstance(modelBuilder)
 
     if (model !== this.currentBindedModel) {
@@ -32,5 +32,7 @@ export class ModelManager {
       model.bind()
       this.currentBindedModel = model
     }
+
+    return model
   }
 }

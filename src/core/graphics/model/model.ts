@@ -4,9 +4,12 @@ export class Model {
   vao: WebGLVertexArrayObject
   vertexCount: number
 
-  constructor() {
+  constructor(vertexCount: number) {
     const { gl } = global
+
     this.vao = gl.createVertexArray()
+    this.vertexCount = vertexCount
+
     global.gl.bindVertexArray(this.vao)
   }
 

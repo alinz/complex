@@ -4,7 +4,7 @@ import { ShaderManager } from '@core/graphics/shader'
 import { ModelManager } from '@core/graphics/model'
 import { mat4, vec3, Vec3 } from '@core/math'
 
-import { SimpleShader } from '@game/shader'
+import { TestShader } from '@game/shader'
 import { squareBuilder } from '@game/model'
 
 const transformation = mat4.identity(mat4.createEmpty())
@@ -20,7 +20,7 @@ export class RenderSystem implements System {
 
   init() {
     // add all shaders here
-    this.shaderManager.add(SimpleShader)
+    this.shaderManager.add(TestShader)
   }
 
   start() {}
@@ -41,7 +41,7 @@ export class RenderSystem implements System {
     const { gl } = global
 
     // Clear the canvas
-    gl.clearColor(0.5, 0.5, 0.5, 1.0)
+    gl.clearColor(0.1, 0.5, 0.5, 1.0)
 
     // Enable the depth test
     gl.enable(gl.DEPTH_TEST)
@@ -52,21 +52,20 @@ export class RenderSystem implements System {
 
   beforeRender() {
     this.clearScreen()
-    const simpleShader = this.shaderManager.bind(SimpleShader)
+    const testShader = this.shaderManager.bind(TestShader)
 
-    mat4.transformationMatrix(transformation, new Vec3(0.2, 0.4, 0.0), 0, 0, 0, 1.0)
+    mat4.transformationMatrix(transformation, new Vec3(0.0, 0.0, 0.0), 0, 0, 0, 1.0)
 
-    simpleShader.loadTransformationMatrix(transformation)
+    testShader.loadTransformationMatrix(transformation)
   }
 
   render() {
     //
     const { gl } = global
 
-    const model = this.modelManager.getInstance(squareBuilder)
+    const model = this.modelManager.autoBind(squareBuilder)
 
-    model.bind()
-    gl.drawElements(gl.TRIANGLE_STRIP, model.vertexCount, gl.UNSIGNED_SHORT, 0)
+    gl.drawElements(gl.TRIANGLES, model.vertexCount, gl.UNSIGNED_SHORT, 0)
   }
 
   afterRender() {
