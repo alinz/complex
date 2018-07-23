@@ -51,11 +51,13 @@ const defaultTextureAttributes = [VBO_Location.Vertex, VBO_Location.Texture]
 
 export class TextureModel2D extends Model2D {
   texture: Texture2D
+  textCoords: WebGLBuffer
 
-  constructor(texture: Texture2D, vertices: Array<number>, indicies: Array<number>) {
+  constructor(texture: Texture2D, textCoords: Array<number>, vertices: Array<number>, indicies: Array<number>) {
     super(vertices, indicies)
 
     this.texture = texture
+    this.textCoords = storeFloatDataInAttributeList(textCoords, 2, VBO_Location.Texture)
   }
 
   attributes(): Array<number> {

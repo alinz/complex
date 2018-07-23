@@ -23,6 +23,8 @@ export class Texture2D {
       gl.UNSIGNED_BYTE, //srcType,
       image
     )
+
+    gl.generateMipmap(gl.TEXTURE_2D)
   }
 
   bind() {
