@@ -4,7 +4,7 @@ import { ShaderManager } from '@core/graphics/shader'
 import { ModelManager } from '@core/graphics/model'
 import { mat4, vec3, Vec3 } from '@core/math'
 
-import { TestShader } from '@game/shader'
+import { SimpleShader } from '@game/shader'
 import { Square } from '@game/model'
 
 const transformation = mat4.identity(mat4.createEmpty())
@@ -20,7 +20,7 @@ export class RenderSystem implements System {
 
   init() {
     // add all shaders here
-    this.shaderManager.add(TestShader)
+    this.shaderManager.add(SimpleShader)
   }
 
   start() {}
@@ -52,11 +52,11 @@ export class RenderSystem implements System {
 
   beforeRender() {
     this.clearScreen()
-    const testShader = this.shaderManager.bind(TestShader)
+    const sahder = this.shaderManager.bind(SimpleShader)
 
     mat4.transformationMatrix(transformation, new Vec3(0.0, 0.0, 0.0), 0, 0, 0, 1.0)
 
-    testShader.loadTransformationMatrix(transformation)
+    sahder.loadTransformationMatrix(transformation)
   }
 
   render() {

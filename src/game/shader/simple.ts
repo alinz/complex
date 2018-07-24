@@ -4,7 +4,8 @@ import { Mat4 } from '@core/math'
 
 const vertexSrc = glsl3`
   in vec3 coordinates;
-  //in vec2 textureCoords;
+  in vec2 textureCoords;
+  
   out vec2 passed_textureCoords;
 
   uniform mat4 transformationMatrix;
@@ -24,7 +25,6 @@ const fragmentSrc = glsl3`
   uniform sampler2D textureSampler;
 
   void main(void) {
-    //outColor = vec4(1.0, 1.0, 1.0, 1.0);
     outColor = texture(textureSampler, passed_textureCoords);
   }
 `
