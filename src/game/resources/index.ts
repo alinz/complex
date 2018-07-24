@@ -1,3 +1,3 @@
-const sample = require('./sample.png')
+const sample = require('./png/sample.png')
 
-export { sample }
+export const PNGs = { sample }

@@ -5,7 +5,7 @@ import { ModelManager } from '@core/graphics/model'
 import { mat4, vec3, Vec3 } from '@core/math'
 
 import { TestShader } from '@game/shader'
-import { squareBuilder } from '@game/model'
+import { triangleBuilder } from '@game/model'
 
 const transformation = mat4.identity(mat4.createEmpty())
 
@@ -63,7 +63,7 @@ export class RenderSystem implements System {
     //
     const { gl } = global
 
-    const model = this.modelManager.autoBind(squareBuilder)
+    const model = this.modelManager.autoBind(triangleBuilder)
 
     gl.drawElements(gl.TRIANGLES, model.vertexCount, gl.UNSIGNED_SHORT, 0)
   }

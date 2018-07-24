@@ -1,20 +1,17 @@
 import 'babel-polyfill'
 
-import { loadImages } from '@core/loader'
-
 import { Game } from '@game'
-import * as images from '@game/resources'
 
-console.log(images)
+window.onload = async () => {
+  const game = new Game()
 
-window.onload = () => {
-  loadImages(images.sample).then(images => {
-    const game = new Game()
+  // waiting until all the resources and io completed
+  // here.
+  await game.init()
 
-    game.start()
+  game.start()
 
-    setTimeout(() => {
-      game.stop()
-    }, 3000)
-  })
+  setTimeout(() => {
+    game.stop()
+  }, 3000)
 }
