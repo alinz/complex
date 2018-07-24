@@ -25,7 +25,3 @@ export class Square extends TextureModel2D {
     super(texture, textureCoords, vertices, indices)
   }
 }
-
-export const squareBuilder = (): Model => {
-  return new Square()
-}

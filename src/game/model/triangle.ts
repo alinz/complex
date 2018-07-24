@@ -8,7 +8,3 @@ export class Triangle extends Model2D {
     super(vertices, indices)
   }
 }
-
-export const triangleBuilder = (): Model => {
-  return new Triangle()
-}

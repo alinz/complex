@@ -3,7 +3,7 @@ import global from '@core/global'
 import { Model } from './model'
 
 export class ModelManager {
-  modelsMap: Map<() => Model, Model>
+  modelsMap: Map<{ new (...args: Array<any>): Model }, Model>
   currentBindedModel: Model | null
 
   constructor() {
@@ -11,19 +11,26 @@ export class ModelManager {
     this.currentBindedModel = null
   }
 
-  getInstance(modelBuilder: () => Model): Model {
-    let model = this.modelsMap.get(modelBuilder)
+  add(ModelClass: { new (...args: Array<any>): Model }, instance: Model) {
+    if (this.modelsMap.has(ModelClass)) {
+      throw new Error(`model '${ModelClass.name}' already added`)
+    }
+
+    this.modelsMap.set(ModelClass, instance)
+  }
+
+  getInstance(ModelClass: { new (...args: Array<any>): Model }): Model {
+    let model = this.modelsMap.get(ModelClass)
 
     if (!model) {
-      model = modelBuilder()
-      this.modelsMap.set(modelBuilder, model)
+      throw new Error(`model '${ModelClass.name}' not found`)
     }
 
     return model
   }
 
-  autoBind(modelBuilder: () => Model): Model {
-    const model = this.getInstance(modelBuilder)
+  autoBind(ModelClass: { new (...args: Array<any>): Model }): Model {
+    const model = this.getInstance(ModelClass)
 
     if (model !== this.currentBindedModel) {
       if (this.currentBindedModel) {
