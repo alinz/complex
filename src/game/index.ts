@@ -4,6 +4,7 @@ import * as di from '@core/di'
 import { SystemManager } from '@core/ecs'
 import { TextureManager } from '@core/graphics/texture'
 import { ModelManager } from '@core/graphics/model'
+import { ShaderManager } from '@core/graphics/shader'
 
 import { RenderSystem } from '@game/render'
 import * as resources from '@game/resources'
@@ -24,10 +25,12 @@ export class Game {
     const modelManager = new ModelManager()
     const textureManager = new TextureManager()
     const systemManager = new SystemManager(60)
+    const shaderManager = new ShaderManager()
 
     di.init(ModelManager, modelManager)
     di.init(TextureManager, textureManager)
     di.init(SystemManager, systemManager)
+    di.init(ShaderManager, shaderManager)
 
     this.modelManager = modelManager
     this.textureManager = textureManager

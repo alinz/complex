@@ -36,7 +36,7 @@ export class Window {
   }
 
   resize = () => {
-    const { canvas, gl } = this
+    const { canvas } = this
     const cssToRealPixels = window.devicePixelRatio || 1
 
     // Lookup the size the browser is displaying the canvas.
@@ -52,8 +52,5 @@ export class Window {
 
     global.width = canvas.width
     global.height = canvas.height
-
-    // Tell WebGL how to convert from clip space to pixels
-    gl.viewport(0, 0, displayWidth, displayHeight)
   }
 }

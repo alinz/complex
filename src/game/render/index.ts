@@ -19,12 +19,11 @@ export class RenderSystem implements System {
   camera: Camera
 
   constructor() {
-    this.shaderManager = new ShaderManager()
-
     this.camera = new Camera()
   }
 
   init() {
+    this.shaderManager = di.instance(ShaderManager)
     this.modelManager = di.instance(ModelManager)
 
     // add all shaders here
@@ -59,10 +58,16 @@ export class RenderSystem implements System {
   }
 
   beforeRender() {
+    const { gl } = global
+
     this.clearScreen()
     const shader = this.shaderManager.bind(SimpleShader)
+
+    // we need to setup projection matrix and viewport here
+    // if aspect ratio is changed
     if (global.isAspectChanged) {
-      // we need to setup projection matrix here
+      // Tell WebGL how to convert from clip space to pixels
+      gl.viewport(0, 0, global.width, global.height)
       const projectionMatrix = mat4.projectionMatrix(global.width, global.height, 70, 0.1, 1000.0)
       shader.loadProjectionMatrix(projectionMatrix)
     }
@@ -72,7 +77,6 @@ export class RenderSystem implements System {
     shader.loadViewMatrix(mat4.createViewMatrix(this.camera.transform.position, this.camera.transform.rotate))
 
     mat4.transformationMatrix(transformation, new Vec3(0.0, 0.0, 0.0), 0, 0, 0, 1.0)
-    // mat4.identity(transformation)
 
     shader.loadTransformationMatrix(transformation)
   }
