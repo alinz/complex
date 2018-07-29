@@ -9,5 +9,6 @@ export class Camera extends Entity {
 
   constructor() {
     super(CameraEntityType)
+    this.transform = new component.Transform()
   }
 }

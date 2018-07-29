@@ -9,9 +9,11 @@ const vertexSrc = glsl3`
   out vec2 passed_textureCoords;
 
   uniform mat4 transformationMatrix;
+  uniform mat4 projectionMatrix;
+  uniform mat4 viewMatrix;
 
   void main(void) {
-    gl_Position = transformationMatrix * vec4(coordinates, 1.0);
+    gl_Position = projectionMatrix * viewMatrix * transformationMatrix * vec4(coordinates, 1.0);
     passed_textureCoords = textureCoords;
   }
 `
@@ -31,11 +33,15 @@ const fragmentSrc = glsl3`
 
 export class SimpleShader extends Shader {
   transformationMatrix: WebGLUniformLocation
+  projectionMatrix: WebGLUniformLocation
+  viewMatrix: WebGLUniformLocation
 
   constructor() {
     super(vertexSrc, fragmentSrc)
 
     this.transformationMatrix = this.getUniformLocation('transformationMatrix')
+    this.projectionMatrix = this.getUniformLocation('projectionMatrix')
+    this.viewMatrix = this.getUniformLocation('viewMatrix')
   }
 
   bindAllAttributes() {
@@ -45,5 +51,13 @@ export class SimpleShader extends Shader {
 
   loadTransformationMatrix(matrix: Mat4) {
     this.loadMatrix(this.transformationMatrix, matrix.values)
+  }
+
+  loadProjectionMatrix(matrix: Mat4) {
+    this.loadMatrix(this.projectionMatrix, matrix.values)
+  }
+
+  loadViewMatrix(matrix: Mat4) {
+    this.loadMatrix(this.viewMatrix, matrix.values)
   }
 }

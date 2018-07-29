@@ -1,3 +1,5 @@
+import global from '@core/global'
+
 export class Window {
   gl: WebGL2RenderingContext
   canvas: HTMLCanvasElement
@@ -47,6 +49,9 @@ export class Window {
       canvas.width = displayWidth
       canvas.height = displayHeight
     }
+
+    global.width = canvas.width
+    global.height = canvas.height
 
     // Tell WebGL how to convert from clip space to pixels
     gl.viewport(0, 0, displayWidth, displayHeight)

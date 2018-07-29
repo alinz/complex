@@ -174,6 +174,16 @@ export const getXZ = (des: Vec2, src: Vec3): Vec2 => {
   return des
 }
 
+export const negate = (des: Vec3, src: Vec3): Vec3 => {
+  const [x, y, z] = src.values
+
+  des.values[0] = -x
+  des.values[1] = -y
+  des.values[2] = -z
+
+  return des
+}
+
 export const clone = (src: Vec3): Vec3 => {
   const [x, y, z] = src.values
 

@@ -11,12 +11,14 @@ export class ShaderManager {
     this.currentBindedShader = null
   }
 
-  add<T extends Shader>(ShaderClass: { new (): T }) {
+  add<T extends Shader>(ShaderClass: { new (): T }): T {
     if (this.shadersMap.has(ShaderClass)) {
       throw new Error(`shader ${ShaderClass.name} already added`)
     }
 
-    this.shadersMap.set(ShaderClass, new ShaderClass())
+    const shader = new ShaderClass()
+    this.shadersMap.set(ShaderClass, shader)
+    return shader
   }
 
   bind<T extends Shader>(ShaderClass: { new (): T }): T {

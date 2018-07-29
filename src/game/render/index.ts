@@ -8,14 +8,20 @@ import * as di from '@core/di'
 import { SimpleShader } from '@game/shader'
 import { Square } from '@game/model'
 
+import { Camera } from '@game/entity'
+
 const transformation = mat4.identity(mat4.createEmpty())
 
 export class RenderSystem implements System {
   shaderManager: ShaderManager
   modelManager: ModelManager
 
+  camera: Camera
+
   constructor() {
     this.shaderManager = new ShaderManager()
+
+    this.camera = new Camera()
   }
 
   init() {
@@ -43,7 +49,7 @@ export class RenderSystem implements System {
     const { gl } = global
 
     // Clear the canvas
-    gl.clearColor(0.1, 0.5, 0.5, 1.0)
+    gl.clearColor(0.1, 0.5, 0.8, 1.0)
 
     // Enable the depth test
     gl.enable(gl.DEPTH_TEST)
@@ -55,8 +61,18 @@ export class RenderSystem implements System {
   beforeRender() {
     this.clearScreen()
     const shader = this.shaderManager.bind(SimpleShader)
+    if (global.isAspectChanged) {
+      // we need to setup projection matrix here
+      const projectionMatrix = mat4.projectionMatrix(global.width, global.height, 70, 0.1, 1000.0)
+      shader.loadProjectionMatrix(projectionMatrix)
+    }
+
+    this.camera.transform.position.values[2] = 1
+    // update camera
+    shader.loadViewMatrix(mat4.createViewMatrix(this.camera.transform.position, this.camera.transform.rotate))
 
     mat4.transformationMatrix(transformation, new Vec3(0.0, 0.0, 0.0), 0, 0, 0, 1.0)
+    // mat4.identity(transformation)
 
     shader.loadTransformationMatrix(transformation)
   }

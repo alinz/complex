@@ -1,5 +1,6 @@
 import { Mat4, Vec3 } from '@core/math/type'
 import { toRadian } from '@core/math/util'
+import * as vec3 from './vec3'
 
 export const M00 = 0
 export const M01 = 1
@@ -20,6 +21,10 @@ export const M33 = 15
 
 export const createEmpty = (): Mat4 => {
   return new Mat4(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+}
+
+export const createIdentity = (): Mat4 => {
+  return new Mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
 }
 
 export const clear = (des: Mat4): Mat4 => {
@@ -330,4 +335,44 @@ export const transformationMatrix = (des: Mat4, position: Vec3, rx: number, ry: 
   scale(des, des, new Vec3(scaleValue, scaleValue, scaleValue))
 
   return des
+}
+
+export const projectionMatrix = (width: number, height: number, fov: number, nearPlane: number, farPlane: number): Mat4 => {
+  const aspectRatio = width / height
+  const yScale = (1.0 / Math.tan(toRadian(fov / 2.0))) * aspectRatio
+  const xScale = yScale / aspectRatio
+  const frustumLength = farPlane - nearPlane
+
+  return new Mat4(
+    xScale, // m00
+    0, //m01
+    0, //m02
+    0, //m03
+    0, //m10
+    yScale, //m11
+    0, //m12
+    0, //m13
+    0, //m20
+    0, //m21
+    -((farPlane - nearPlane) / frustumLength), //m22
+    -1, //m23
+    0, //m30
+    0, //m31
+    -((2.0 * nearPlane * farPlane) / frustumLength), //m32
+    0 //m33
+  )
+}
+
+// 0 -> pitch
+// 1 -> yaw
+// 2 -> roll
+export const createViewMatrix = (position: Vec3, rotation: Vec3): Mat4 => {
+  const result = createIdentity()
+  const { values } = rotation
+
+  vec3.negate(position, position)
+  transformationMatrix(result, position, values[0], values[1], values[2], 1.0)
+  vec3.negate(position, position)
+
+  return result
 }
