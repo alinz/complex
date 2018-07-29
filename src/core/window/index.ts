@@ -1,7 +1,6 @@
 import global from '@core/global'
 
 export class Window {
-  gl: WebGL2RenderingContext
   canvas: HTMLCanvasElement
 
   constructor() {
@@ -28,7 +27,9 @@ export class Window {
     }
 
     this.canvas = canvas
-    this.gl = gl
+    // setup global webgl2 context
+    // the core is depends on this
+    global.gl = gl
 
     this.resize()
 
