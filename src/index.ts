@@ -1,17 +1,17 @@
 import 'babel-polyfill'
 
-import { Game } from '@game'
+import { App } from '@game'
 
 window.onload = async () => {
-  const game = new Game()
+  const app = new App()
 
   // waiting until all the resources and io completed
   // here.
-  await game.init()
+  await app.init()
 
-  game.start()
+  app.start()
 
   setTimeout(() => {
-    game.stop()
-  }, 3000)
+    app.stop()
+  }, 4000)
 }
