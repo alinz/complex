@@ -6,7 +6,7 @@ import { TextureManager } from '@core/graphics/texture'
 import { ModelManager } from '@core/graphics/model'
 import { ShaderManager } from '@core/graphics/shader'
 
-import { RenderSystem } from '@game/render'
+import { RenderSystem } from '@game/system'
 import * as resources from '@game/resources'
 import * as models from '@game/model'
 
