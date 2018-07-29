@@ -39,10 +39,10 @@ export class Game {
 
   async init() {
     // load resources
-    await this.textureManager.loadPNGs(resources.PNGs)
+    await this.textureManager.loadPNGs(resources.images)
 
     // load models
-    this.modelManager.add(models.Square, new models.Square(this.textureManager.texture('sample')))
+    this.modelManager.add(models.Square, new models.Square(this.textureManager.texture(resources.images.sample.key)))
   }
 
   start() {

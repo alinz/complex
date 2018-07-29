@@ -2,6 +2,13 @@ import { loadImage } from '@core/loader'
 
 import { Texture2D } from './texture2d'
 
+type ImagesInfo = {
+  [key: string]: {
+    key: string
+    path: string
+  }
+}
+
 export class TextureManager {
   collections: Map<string, Texture2D>
 
@@ -9,15 +16,17 @@ export class TextureManager {
     this.collections = new Map()
   }
 
-  async loadPNGs(resourcesMap: { [key: string]: string }) {
+  async loadPNGs(resourcesMap: ImagesInfo) {
     for (const key in resourcesMap) {
-      if (this.collections.has(key)) {
-        throw new Error(`png with key ${key} already loaded`)
+      const val = resourcesMap[key]
+
+      if (this.collections.has(val.key)) {
+        throw new Error(`png with key ${val.key} already loaded`)
       }
 
-      const image = await loadImage(resourcesMap[key])
+      const image = await loadImage(val.path)
 
-      this.collections.set(key, new Texture2D(image))
+      this.collections.set(val.key, new Texture2D(image))
     }
   }
 

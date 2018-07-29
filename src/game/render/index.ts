@@ -71,7 +71,12 @@ export class RenderSystem implements System {
   }
 
   afterRender() {
+    const { gl } = global
+
     //
     this.shaderManager.unbind()
+
+    // disable the depth test
+    gl.disable(gl.DEPTH_TEST)
   }
 }
