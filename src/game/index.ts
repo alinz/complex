@@ -1,6 +1,7 @@
 import global from '@core/global'
 import { Window } from '@core/window'
-import { SystemManger } from '@core/ecs'
+import * as di from '@core/di'
+import { SystemManager } from '@core/ecs'
 import { TextureManager } from '@core/graphics/texture'
 import { ModelManager } from '@core/graphics/model'
 
@@ -10,7 +11,7 @@ import * as models from '@game/model'
 
 export class Game {
   window: Window
-  systemManager: SystemManger
+  systemManager: SystemManager
   textureManager: TextureManager
   modelManager: ModelManager
 
@@ -20,12 +21,20 @@ export class Game {
     // the core is depends on this
     global.gl = this.window.gl
 
-    this.modelManager = new ModelManager()
-    this.textureManager = new TextureManager()
-    this.systemManager = new SystemManger(60)
+    const modelManager = new ModelManager()
+    const textureManager = new TextureManager()
+    const systemManager = new SystemManager(60)
+
+    di.init(ModelManager, modelManager)
+    di.init(TextureManager, textureManager)
+    di.init(SystemManager, systemManager)
+
+    this.modelManager = modelManager
+    this.textureManager = textureManager
+    this.systemManager = systemManager
 
     // add all the systems here, order matters
-    this.systemManager.add(RenderSystem, new RenderSystem(this.modelManager))
+    this.systemManager.add(RenderSystem, new RenderSystem())
   }
 
   async init() {

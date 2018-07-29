@@ -19,7 +19,7 @@ class SystemInfo {
   }
 }
 
-export class SystemManger {
+export class SystemManager {
   systems: Array<SystemInfo>
   systemsMap: Map<{ new (...args: any[]): System }, SystemInfo>
   isRunning: boolean
@@ -35,7 +35,7 @@ export class SystemManger {
     this.frameTime = 1.0 / this.frameRate
   }
 
-  add<T extends System>(SystemClass: { new (...args: any[]): T }, instance: T): SystemManger {
+  add<T extends System>(SystemClass: { new (...args: any[]): T }, instance: T): SystemManager {
     if (this.systemsMap.has(SystemClass)) {
       throw new Error(`System ${SystemClass.name} already exists`)
     }

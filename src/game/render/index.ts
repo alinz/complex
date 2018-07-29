@@ -3,6 +3,7 @@ import { System } from '@core/ecs'
 import { ShaderManager } from '@core/graphics/shader'
 import { ModelManager } from '@core/graphics/model'
 import { mat4, vec3, Vec3 } from '@core/math'
+import * as di from '@core/di'
 
 import { SimpleShader } from '@game/shader'
 import { Square } from '@game/model'
@@ -13,12 +14,13 @@ export class RenderSystem implements System {
   shaderManager: ShaderManager
   modelManager: ModelManager
 
-  constructor(modelManager: ModelManager) {
+  constructor() {
     this.shaderManager = new ShaderManager()
-    this.modelManager = modelManager
   }
 
   init() {
+    this.modelManager = di.instance(ModelManager)
+
     // add all shaders here
     this.shaderManager.add(SimpleShader)
   }
@@ -52,11 +54,11 @@ export class RenderSystem implements System {
 
   beforeRender() {
     this.clearScreen()
-    const sahder = this.shaderManager.bind(SimpleShader)
+    const shader = this.shaderManager.bind(SimpleShader)
 
     mat4.transformationMatrix(transformation, new Vec3(0.0, 0.0, 0.0), 0, 0, 0, 1.0)
 
-    sahder.loadTransformationMatrix(transformation)
+    shader.loadTransformationMatrix(transformation)
   }
 
   render() {
