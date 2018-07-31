@@ -33,7 +33,7 @@ export class Runner {
     }
 
     const scene = this.scene
-    const step = ups
+    const step = 1 / ups
     const slow = 1
 
     let now = 0
