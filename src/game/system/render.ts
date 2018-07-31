@@ -85,14 +85,7 @@ export class RenderSystem implements System {
 
     for (const renderable of renderables) {
       const transform = renderable.transform
-      mat4.transformationMatrix(
-        transformation,
-        transform.position,
-        transform.rotate.values[0],
-        transform.rotate.values[1],
-        transform.rotate.values[2],
-        transform.scale
-      )
+      mat4.transformationMatrix(transformation, transform.position, transform.rotate, transform.scale)
 
       shader.loadTransformationMatrix(transformation)
 

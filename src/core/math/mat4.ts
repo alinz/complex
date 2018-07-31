@@ -325,8 +325,10 @@ export const copy = (des: Mat4, src: Mat4): Mat4 => {
   return des
 }
 
-export const transformationMatrix = (des: Mat4, position: Vec3, rx: number, ry: number, rz: number, scaleValue: number): Mat4 => {
+export const transformationMatrix = (des: Mat4, position: Vec3, rotation: Vec3, scaleValue: number): Mat4 => {
   identity(des)
+
+  const [rx, ry, rz] = rotation.values
 
   translate(des, des, position)
   rotate(des, des, rx, new Vec3(1, 0, 0))
@@ -368,10 +370,9 @@ export const projectionMatrix = (width: number, height: number, fov: number, nea
 // 2 -> roll
 export const createViewMatrix = (position: Vec3, rotation: Vec3): Mat4 => {
   const result = createIdentity()
-  const { values } = rotation
 
   vec3.negate(position, position)
-  transformationMatrix(result, position, values[0], values[1], values[2], 1.0)
+  transformationMatrix(result, position, rotation, 1.0)
   vec3.negate(position, position)
 
   return result
