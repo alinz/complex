@@ -1,23 +1,27 @@
 import { iota } from '@core/generator'
 import { FastArray } from '@core/algorithm'
 
-export const genEntityId = iota()
+const genEntityId = iota()
 
 export class Entity {
-  id: number
-  type: number
-  init: boolean
-  active: boolean
+  meta: {
+    id: number
+    type: number
+    active: boolean
+  }
 
   constructor(type: number) {
-    this.id = genEntityId()
-    this.type = type
-    this.init = false
-    this.active = true
+    this.meta = {
+      id: genEntityId(),
+      type: type,
+      active: true
+    }
   }
+
+  clean() {}
 }
 
-export class EntityManager {
+export class EntityPool {
   bucketsMap: Map<number, Array<Entity>>
   bucketTypes: Array<number>
   entityToBuckets: Map<number, Array<FastArray<Entity>>>
@@ -30,7 +34,8 @@ export class EntityManager {
 
   // this method must be used when each system is being intialized
   // do not call this method after initalization.
-  registerBucketType(type: number) {
+  // NOTE: This Method will be called automatically
+  addBucket(type: number) {
     if (!this.bucketsMap.has(type)) {
       this.bucketsMap.set(type, [])
       this.bucketTypes.push(type)
@@ -39,22 +44,17 @@ export class EntityManager {
 
   // everytime an entity is being created, this methid must be called
   add(entity: Entity) {
-    if (!entity.init) {
-      return
-    }
-
-    entity.init = true
-
+    const meta = entity.meta
     for (const bucketType of this.bucketTypes) {
-      if ((entity.type & bucketType) === bucketType) {
+      if ((meta.type & bucketType) === bucketType) {
         const buckets = this.bucketsMap.get(bucketType)
 
         buckets.push(entity)
 
-        let bucketsRef = this.entityToBuckets.get(entity.id)
+        let bucketsRef = this.entityToBuckets.get(meta.id)
         if (!bucketsRef) {
           bucketsRef = []
-          this.entityToBuckets.set(entity.id, bucketsRef)
+          this.entityToBuckets.set(meta.id, bucketsRef)
         }
 
         bucketsRef.push(new FastArray(buckets))
@@ -63,7 +63,8 @@ export class EntityManager {
   }
 
   remove(entity: Entity) {
-    const bucketsRef = this.entityToBuckets.get(entity.id)
+    const { meta } = entity
+    const bucketsRef = this.entityToBuckets.get(meta.id)
     if (!bucketsRef) {
       return
     }
@@ -71,16 +72,31 @@ export class EntityManager {
     for (const buckets of bucketsRef) {
       buckets.remove(buckets.indexOf(entity))
     }
-
-    entity.init = false
   }
 
-  entities(type: number): Array<Entity> {
+  find<T extends Entity>(type: number): Array<T> {
     const entities = this.bucketsMap.get(type)
     if (!entities) {
       throw new Error(`no entities found for type ${type}`)
     }
 
-    return entities
+    return entities as Array<T>
+  }
+
+  clean() {
+    const uniqueEntities = new Set<Entity>()
+    for (const entities of this.bucketsMap.values()) {
+      for (const entity of entities) {
+        uniqueEntities.add(entity)
+      }
+    }
+
+    for (const entity of uniqueEntities) {
+      entity.clean()
+    }
+
+    this.bucketsMap.clear()
+    this.bucketTypes = []
+    this.entityToBuckets.clear()
   }
 }

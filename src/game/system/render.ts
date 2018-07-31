@@ -1,48 +1,47 @@
 import global from '@core/global'
-import { System } from '@core/ecs'
+import { System, Operation, Entity } from '@core/ecs'
 import { ShaderManager } from '@core/graphics/shader'
-import { ModelManager } from '@core/graphics/model'
 import { mat4, vec3, Vec3 } from '@core/math'
 import * as di from '@core/di'
 
 import { SimpleShader } from '@game/shader'
 import { Square } from '@game/model'
-
 import { Camera } from '@game/entity'
+import * as component from '@game/component'
 
 const transformation = mat4.identity(mat4.createEmpty())
 
+const cameraBucket = component.Camera.Type
+const renderableBucket = component.Geometry.Type | component.Transform.Type
+
 export class RenderSystem implements System {
   shaderManager: ShaderManager
-  modelManager: ModelManager
-
-  camera: Camera
 
   constructor() {
-    this.camera = new Camera()
-  }
-
-  init() {
+    // load shaders
     this.shaderManager = di.instance(ShaderManager)
-    this.modelManager = di.instance(ModelManager)
-
-    // add all shaders here
     this.shaderManager.add(SimpleShader)
   }
 
+  componentTypes(): Array<number> {
+    return [cameraBucket, renderableBucket]
+  }
+
+  init(op: Operation) {}
+
   start() {}
 
-  fixedUpdate(delta: number) {}
+  fixedUpdate(delta: number, op: Operation) {}
 
-  lateUpdate(interpolation: number) {
-    this.beforeRender()
-    this.render()
-    this.afterRender()
+  lateUpdate(interpolation: number, op: Operation) {
+    this.beforeRender(interpolation, op)
+    this.render(interpolation, op)
+    this.afterRender(interpolation, op)
   }
 
   stop() {}
 
-  cleanup() {}
+  clean() {}
 
   clearScreen() {
     const { gl } = global
@@ -57,7 +56,7 @@ export class RenderSystem implements System {
     gl.clear(gl.COLOR_BUFFER_BIT)
   }
 
-  beforeRender() {
+  beforeRender(interpolation: number, op: Operation) {
     const { gl } = global
 
     this.clearScreen()
@@ -72,25 +71,38 @@ export class RenderSystem implements System {
       shader.loadProjectionMatrix(projectionMatrix)
     }
 
-    this.camera.transform.position.values[2] = 1
-    // update camera
-    shader.loadViewMatrix(mat4.createViewMatrix(this.camera.transform.position, this.camera.transform.rotate))
-
-    mat4.transformationMatrix(transformation, new Vec3(0.0, 0.0, 0.0), 0, 0, 0, 1.0)
-
-    shader.loadTransformationMatrix(transformation)
+    // nead to load the camera
+    const camera = op.find<Camera>(cameraBucket)[0]
+    shader.loadViewMatrix(mat4.createViewMatrix(camera.transform.position, camera.transform.rotate))
   }
 
-  render() {
+  render(interpolation: number, op: Operation) {
     //
     const { gl } = global
 
-    const model = this.modelManager.autoBind(Square)
+    const shader = this.shaderManager.bind(SimpleShader)
+    const renderables = op.find<Entity & { transform: component.Transform; geometry: component.Geometry }>(renderableBucket)
 
-    gl.drawElements(gl.TRIANGLES, model.vertexCount, gl.UNSIGNED_SHORT, 0)
+    for (const renderable of renderables) {
+      const transform = renderable.transform
+      mat4.transformationMatrix(
+        transformation,
+        transform.position,
+        transform.rotate.values[0],
+        transform.rotate.values[1],
+        transform.rotate.values[2],
+        transform.scale
+      )
+
+      shader.loadTransformationMatrix(transformation)
+
+      const model = renderable.geometry.model
+      model.bind()
+      gl.drawElements(gl.TRIANGLES, model.vertexCount, gl.UNSIGNED_SHORT, 0)
+    }
   }
 
-  afterRender() {
+  afterRender(interpolation: number, op: Operation) {
     const { gl } = global
 
     //

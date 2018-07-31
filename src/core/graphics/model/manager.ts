@@ -3,7 +3,7 @@ import global from '@core/global'
 import { Model } from './model'
 
 export class ModelManager {
-  modelsMap: Map<{ new (...args: Array<any>): Model }, Model>
+  modelsMap: Map<{ new (): Model }, Model>
   currentBindedModel: Model | null
 
   constructor() {
@@ -11,15 +11,16 @@ export class ModelManager {
     this.currentBindedModel = null
   }
 
-  add(ModelClass: { new (...args: Array<any>): Model }, instance: Model) {
+  add(ModelClass: { new (): Model }) {
     if (this.modelsMap.has(ModelClass)) {
       throw new Error(`model '${ModelClass.name}' already added`)
     }
 
+    const instance = new ModelClass()
     this.modelsMap.set(ModelClass, instance)
   }
 
-  getInstance(ModelClass: { new (...args: Array<any>): Model }): Model {
+  getInstance(ModelClass: { new (): Model }): Model {
     let model = this.modelsMap.get(ModelClass)
 
     if (!model) {
@@ -29,7 +30,7 @@ export class ModelManager {
     return model
   }
 
-  autoBind(ModelClass: { new (...args: Array<any>): Model }): Model {
+  autoBind(ModelClass: { new (): Model }): Model {
     const model = this.getInstance(ModelClass)
 
     if (model !== this.currentBindedModel) {

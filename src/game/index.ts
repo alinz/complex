@@ -1,65 +1,48 @@
-import global from '@core/global'
-import { Window } from '@core/window'
 import * as di from '@core/di'
-import { SystemManager, EntityManager } from '@core/ecs'
+import { Window } from '@core/window'
 import { TextureManager } from '@core/graphics/texture'
 import { ModelManager } from '@core/graphics/model'
 import { ShaderManager } from '@core/graphics/shader'
+import { Runner } from '@core/scene'
 
-import { RenderSystem, GameSystem } from '@game/system'
-import * as resources from '@game/resources'
-import * as models from '@game/model'
+import * as resource from '@game/resource'
+import { FirstScene } from '@game/scene'
 
-export class App {
+export class Main {
   window: Window
-  systemManager: SystemManager
-  textureManager: TextureManager
-  modelManager: ModelManager
+  runner: Runner
 
   constructor() {
     // window object must be initlized first
     // because it sets global WebGL2 context before any other
     // core components boots up
     this.window = new Window()
+    console.log('initialized window')
 
-    const modelManager = new ModelManager()
-    const textureManager = new TextureManager()
-    const systemManager = new SystemManager(60)
-    const shaderManager = new ShaderManager()
-    const entityManager = new EntityManager()
+    di.init(ModelManager, new ModelManager())
+    di.init(TextureManager, new TextureManager())
+    di.init(ShaderManager, new ShaderManager())
 
-    di.init(ModelManager, modelManager)
-    di.init(TextureManager, textureManager)
-    di.init(SystemManager, systemManager)
-    di.init(ShaderManager, shaderManager)
-    di.init(EntityManager, entityManager)
-
-    this.modelManager = modelManager
-    this.textureManager = textureManager
-    this.systemManager = systemManager
+    console.log('initialized managers')
   }
 
   // load all models, textures, and audio files here
   async init() {
+    const textureManager = di.instance(TextureManager)
+
     // load resources
-    await this.textureManager.loadPNGs(resources.images)
+    await textureManager.loadPNGs(resource.images)
+    console.log('loaded textures')
 
-    // load models
-    this.modelManager.add(models.Square, new models.Square(this.textureManager.texture(resources.images.sample.key)))
-
-    // add all the systems here, order matters
-    // NOTE: systems must be added last
-    this.systemManager.add(GameSystem, new GameSystem())
-    this.systemManager.add(RenderSystem, new RenderSystem())
+    this.runner = new Runner(new FirstScene())
+    this.runner.init()
   }
 
   start() {
-    this.systemManager.startAllSystems()
-    this.systemManager.start()
+    this.runner.start(60)
   }
 
   stop() {
-    this.systemManager.stopAllSystems()
-    this.systemManager.stop()
+    this.runner.stop()
   }
 }

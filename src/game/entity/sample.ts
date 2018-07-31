@@ -17,5 +17,6 @@ export class Sample extends Entity {
     const modelManager = di.instance(ModelManager)
 
     this.geometry = new component.Geometry(modelManager.getInstance(model.Square))
+    this.transform = new component.Transform()
   }
 }
