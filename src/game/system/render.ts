@@ -1,6 +1,7 @@
 import global from '@core/global'
 import { System, Operation, Entity } from '@core/ecs'
 import { ShaderManager } from '@core/graphics/shader'
+import { Model } from '@core/graphics/model'
 import { mat4, vec3, Vec3 } from '@core/math'
 import * as di from '@core/di'
 
@@ -16,11 +17,14 @@ const renderableBucket = component.Geometry.Type | component.Transform.Type
 
 export class RenderSystem implements System {
   shaderManager: ShaderManager
+  currentBindedModel: Model | null
 
   constructor() {
     // load shaders
     this.shaderManager = di.instance(ShaderManager)
     this.shaderManager.add(SimpleShader)
+
+    this.currentBindedModel = null
   }
 
   componentTypes(): Array<number> {
@@ -77,7 +81,6 @@ export class RenderSystem implements System {
   }
 
   render(interpolation: number, op: Operation) {
-    //
     const { gl } = global
 
     const shader = this.shaderManager.bind(SimpleShader)
@@ -85,12 +88,22 @@ export class RenderSystem implements System {
 
     for (const renderable of renderables) {
       const transform = renderable.transform
+      const model = renderable.geometry.model
+
       mat4.transformationMatrix(transformation, transform.position, transform.rotate, transform.scale)
 
       shader.loadTransformationMatrix(transformation)
 
-      const model = renderable.geometry.model
-      model.bind()
+      // optimize the binding since same model shouldn't
+      // be binded twice.
+      if (this.currentBindedModel !== model) {
+        if (this.currentBindedModel) {
+          this.currentBindedModel.unbind()
+        }
+        this.currentBindedModel = model
+        model.bind()
+      }
+
       gl.drawElements(gl.TRIANGLES, model.vertexCount, gl.UNSIGNED_SHORT, 0)
     }
   }
